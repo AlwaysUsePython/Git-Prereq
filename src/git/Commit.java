@@ -62,6 +62,18 @@ public class Commit {
 		}
 		
 		commitTree = new Tree(listOfFiles);
+		
+		clearIndex();
+		
+	}
+	
+	public void clearIndex() throws IOException {
+		
+		File indexFile = new File("index.txt");
+		indexFile.delete();
+		
+		Index.makeFile("index.txt");
+		new File ("objects/").mkdirs();
 	}
 	
 	public String getSha () {

@@ -21,7 +21,7 @@ import java.util.*;
 public class Tree {
 
 	private String fileName = "";
-private	ArrayList<String> strings = new ArrayList<String>();
+	private	ArrayList<String> strings = new ArrayList<String>();
 	
 	public Tree (ArrayList<String> input) throws Exception{
 		this.strings = input;
