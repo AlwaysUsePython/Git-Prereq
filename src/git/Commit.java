@@ -90,6 +90,8 @@ public class Commit {
 		
 		Index.makeFile("index.txt");
 		new File ("objects/").mkdirs();
+		
+		Index.resetHashMap();
 	}
 	
 	public String getSha () {

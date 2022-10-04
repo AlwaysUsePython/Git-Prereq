@@ -75,4 +75,8 @@ public class Index {
 		Path newFilePath = Paths.get(s);
 	    Files.createFile(newFilePath);
 	}
+	
+	public static void resetHashMap() {
+		hm = new HashMap<String, String>();
+	}
 }
