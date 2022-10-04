@@ -70,7 +70,7 @@ public class Index {
 		
 	}
 	
-	private void makeFile(String s) throws IOException {
+	public static void makeFile(String s) throws IOException {
 		Path newFilePath = Paths.get(s);
 	    Files.createFile(newFilePath);
 	}

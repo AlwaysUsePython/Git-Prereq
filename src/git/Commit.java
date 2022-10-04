@@ -33,22 +33,26 @@ public class Commit {
 		
 		ArrayList<String> listOfFiles = new ArrayList<String>();
 		
-		String treeStr = "tree";
-		
-		treeStr += " : ";
-		
-		// add the has without the "\objects" using Asher's built in method
-		treeStr += prev.getTreeName();
-		
-		
-		listOfFiles.add(treeStr);
+		try {
+			String treeStr = "tree";
+			
+			treeStr += " : ";
+			
+			// add the has without the "\objects" using Asher's built in method
+			treeStr += prev.getTreeName();
+			
+			
+			listOfFiles.add(treeStr);
+		}catch(Exception e) {
+			
+		}
 		
 		Scanner indexReader = new Scanner(new File("index.txt"));
 		
 		while (indexReader.hasNext()) {
-			String indexStr = indexReader.next();
+			String indexStr = indexReader.nextLine();
 			String fileStr = "blob :";
-			fileStr += indexStr.substring(indexStr.indexOf(':'+1));
+			fileStr += indexStr.substring(indexStr.indexOf(':')+1);
 			fileStr += " ";
 			// should I have made a variable for indexStr.indexOf(':') if I'm using it twice?
 			// yes.
@@ -70,7 +74,7 @@ public class Commit {
 	public void clearIndex() throws IOException {
 		
 		File indexFile = new File("index.txt");
-		indexFile.delete();
+		System.out.println(indexFile.delete());
 		
 		Index.makeFile("index.txt");
 		new File ("objects/").mkdirs();
