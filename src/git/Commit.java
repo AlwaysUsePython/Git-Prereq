@@ -9,18 +9,18 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;  
-import java.time.format.DateTimeFormatter;  
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;  
 
 public class Commit {
 	
-	private String pTree;
+	private Tree commitTree;
 	private String summary;
 	private String author;
 	private Commit next;
 	private Commit previous;
 
-	public Commit(String pt, String sum, String a, Commit prev) {
-		pTree=pt;
+	public Commit(String sum, String a, Commit prev) throws Exception {
 		summary=sum;
 		author=a;
 		previous = prev;
@@ -28,10 +28,22 @@ public class Commit {
 			previous.setNext(this);
 		}
 		next = null;
+		
+		ArrayList<String> listOfFiles = new ArrayList<String>();
+		
+		String treeStr = "tree";
+		
+		treeStr += " : ";
+		
+		// add the has without the "\objects" using Asher's built in method
+		treeStr += prev.getTreeName();
+		
+		
+		commitTree = new Tree(listOfFiles);
 	}
 	
 	public String getSha () {
-		String str = pTree+""+summary;
+		String str = commitTree.getFN()+""+summary;
 		return encryptThisString (str);
 	}
 	
@@ -92,7 +104,7 @@ public class Commit {
 	public void writeFile () throws IOException {
 		makeFile ("objects/"+this.getSha());
 		PrintWriter out = new PrintWriter ("objects/"+this.getSha());
-		out.println(pTree);
+		out.println(commitTree.getFN());
 		out.println("objects/"+getPreviousFileName());
 		out.println("objects/"+getNextFileName());
 		out.println(author);
@@ -104,6 +116,10 @@ public class Commit {
 	private void makeFile(String s) throws IOException {
 		Path newFilePath = Paths.get(s);
 	    Files.createFile(newFilePath);
+	}
+	
+	public String getTreeName() {
+		return commitTree.getFN();
 	}
 }
 
