@@ -1,5 +1,6 @@
 package git;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -10,7 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;  
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;  
+import java.util.ArrayList;
+import java.util.Scanner;  
 
 public class Commit {
 	
@@ -38,6 +40,26 @@ public class Commit {
 		// add the has without the "\objects" using Asher's built in method
 		treeStr += prev.getTreeName();
 		
+		
+		listOfFiles.add(treeStr);
+		
+		Scanner indexReader = new Scanner(new File("index.txt"));
+		
+		while (indexReader.hasNext()) {
+			String indexStr = indexReader.next();
+			String fileStr = "blob :";
+			fileStr += indexStr.substring(indexStr.indexOf(':'+1));
+			fileStr += " ";
+			// should I have made a variable for indexStr.indexOf(':') if I'm using it twice?
+			// yes.
+			// did I realize that too late and am now too lazy to make it?
+			// yes.
+			// did it take longer to write these comments than it would have to fix it?
+			// shhhhhhhhhhhhhh
+			fileStr += indexStr.substring(0, indexStr.indexOf(':' - 1));
+			
+			listOfFiles.add(fileStr);
+		}
 		
 		commitTree = new Tree(listOfFiles);
 	}
