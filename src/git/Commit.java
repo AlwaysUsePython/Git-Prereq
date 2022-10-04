@@ -128,7 +128,7 @@ public class Commit {
 		
 		headWriter.close();
 		
-		
+	
 	}
 	
 	public void clearIndex() throws IOException {

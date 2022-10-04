@@ -256,6 +256,8 @@ class CommitJUnitTester {
 		
 		assertTrue(correct);
 		
+		testIndex.delete("firstTest.txt");
+		
 		
 	}
 	

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class Index {
 	//private boolean bool = false;
@@ -49,10 +50,41 @@ public class Index {
 		br.close();
 	}
 	
+	public static void delete(String fn) throws IOException {
+		
+		BufferedReader br = new BufferedReader(new FileReader ("index.txt"));
+		String str = "";
+		while (br.ready()) {
+			str += ""+(char)br.read();
+		}
+		
+		PrintWriter fw = new PrintWriter("index.txt");
+		fw.print(str + "deleted " + fn.substring(0,fn.length()-4));
+		fw.close();
+		
+		File original = new File(fn);
+		
+		String text = "";
+		
+		br = new BufferedReader(new FileReader (original));
+		while (br.ready()) {
+			text += (char)br.read();
+		}
+		br.close();
+		String encrypted = Blob.encryptThisString(text);
+		String FILE_NAME="objects/"+encrypted+".txt";
+		
+		File toDelete = new File (FILE_NAME);
+		
+		toDelete.delete();
+	}
+	
 	public static void remove(String fn) throws IOException {
 		if (hm.containsKey(fn.substring(0,fn.length()-4))) {
 			String str = Blob.encryptThisString(fn);
 			hm.remove(fn.substring(0,fn.length()-4), str);
+			
+			
 			BufferedReader br = new BufferedReader(new FileReader ("index.txt"));
 			PrintWriter pw = new PrintWriter("temp.txt");
 			while (br.ready()) {
