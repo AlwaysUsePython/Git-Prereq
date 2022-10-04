@@ -23,12 +23,11 @@ public class Commit {
 	private Commit previous;
 
 	public Commit(String sum, String a, Commit prev) throws Exception {
+		
 		summary=sum;
 		author=a;
 		previous = prev;
-		if (previous!=null) {
-			previous.setNext(this);
-		}
+		
 		next = null;
 		
 		ArrayList<String> listOfFiles = new ArrayList<String>();
@@ -60,21 +59,34 @@ public class Commit {
 			// yes.
 			// did it take longer to write these comments than it would have to fix it?
 			// shhhhhhhhhhhhhh
-			fileStr += indexStr.substring(0, indexStr.indexOf(':' - 1));
+			fileStr += indexStr.substring(0, indexStr.indexOf(':') - 1);
 			
 			listOfFiles.add(fileStr);
 		}
+		
+		indexReader.close();
+		
 		
 		commitTree = new Tree(listOfFiles);
 		
 		clearIndex();
 		
+		writeFile();
+		
+		if (previous!=null) {
+			previous.setNext(this);
+			previous.updateFile();
+		}
+		
 	}
 	
 	public void clearIndex() throws IOException {
 		
-		File indexFile = new File("index.txt");
-		System.out.println(indexFile.delete());
+		//File indexFile = new File("index.txt");
+		//System.out.println(indexFile.exists());
+		//System.out.println(indexFile.delete());
+		
+		Files.delete(Paths.get("index.txt"));
 		
 		Index.makeFile("index.txt");
 		new File ("objects/").mkdirs();
@@ -142,13 +154,28 @@ public class Commit {
 	public void writeFile () throws IOException {
 		makeFile ("objects/"+this.getSha());
 		PrintWriter out = new PrintWriter ("objects/"+this.getSha());
-		out.println(commitTree.getFN());
-		out.println("objects/"+getPreviousFileName());
-		out.println("objects/"+getNextFileName());
+		out.println("objects/" + commitTree.getFN());
+		if (previous == null) {
+			out.println();
+		}
+		else {
+			out.println("objects/"+getPreviousFileName());
+		}
+		if (next == null) {
+			out.println();
+		}
+		else {
+			out.println("objects/"+getNextFileName());
+		}
 		out.println(author);
 		out.println(getDate());
 		out.println(summary);
 		out.close();
+	}
+	
+	public void updateFile() throws IOException {
+		Files.delete(Paths.get("objects/"+this.getSha()));
+		writeFile();
 	}
 	
 	private void makeFile(String s) throws IOException {

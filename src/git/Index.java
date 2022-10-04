@@ -43,6 +43,7 @@ public class Index {
 			fw.print(str+fn.substring(0,fn.length()-4)+" : "+blobby.getName()+"\n");
 			fw.close();
 		}
+		br.close();
 	}
 	
 	public static void remove(String fn) throws IOException {
