@@ -20,30 +20,49 @@ public class Commit {
 	private String summary;
 	private String author;
 	private Commit next;
-	private Commit previous;
+	private String previous;
 
-	public Commit(String sum, String a, Commit prev) throws Exception {
+	public Commit(String sum, String a) throws Exception {
+		
+		File head = new File("head.txt");
+		
+		Scanner headReader = new Scanner(head);
+		String parentTree = null;
+		
+		try{
+			String parentPointer = headReader.nextLine();
+			
+			Scanner parentReader = new Scanner(new File(parentPointer));
+			
+			parentTree = parentReader.nextLine().substring(8);
+			
+			previous = parentPointer;
+			
+			
+			
+		}
+		catch(Exception e){
+			previous = null;
+		}
+		headReader.close();
 		
 		summary=sum;
 		author=a;
-		previous = prev;
 		
 		next = null;
 		
 		ArrayList<String> listOfFiles = new ArrayList<String>();
 		
-		try {
+		if (previous != null) {
 			String treeStr = "tree";
 			
 			treeStr += " : ";
 			
 			// add the has without the "\objects" using Asher's built in method
-			treeStr += prev.getTreeName();
+			treeStr += parentTree;
 			
 			
 			listOfFiles.add(treeStr);
-		}catch(Exception e) {
-			
 		}
 		
 		Scanner indexReader = new Scanner(new File("index.txt"));
@@ -73,10 +92,18 @@ public class Commit {
 		
 		writeFile();
 		
-		if (previous!=null) {
-			previous.setNext(this);
-			previous.updateFile();
-		}
+//		if (previous!=null) {
+//			pass;
+//		}
+		
+		// updating head
+		
+		PrintWriter headWriter = new PrintWriter(head);
+		
+		headWriter.write("objects/" + getSha());
+		
+		headWriter.close();
+		
 		
 	}
 	
@@ -135,12 +162,6 @@ public class Commit {
 		return java.time.LocalDate.now(); 
 	}
 	
-	public String getPreviousFileName() { 
-		if (previous!=null) {
-			return previous.getSha(); 
-		}
-		return null; 
-	}
 	
 	public String getNextFileName() { 
 		if (next!=null) {
@@ -161,7 +182,7 @@ public class Commit {
 			out.println();
 		}
 		else {
-			out.println("objects/"+getPreviousFileName());
+			out.println(previous);
 		}
 		if (next == null) {
 			out.println();

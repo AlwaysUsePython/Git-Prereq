@@ -26,6 +26,9 @@ public class Index {
 	public void init() throws IOException {
 		makeFile("index.txt");
 		new File ("objects/").mkdirs();
+		
+		makeFile("head.txt");
+		new File ("objects/").mkdirs();
 	}
 	
 	public static void add(String fn) throws IOException {

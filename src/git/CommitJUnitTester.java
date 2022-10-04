@@ -157,6 +157,13 @@ class CommitJUnitTester {
 	    } else {
 	      System.out.println("Failed to delete the file.");
 	    } 
+	    
+	    File headFile = new File("head.txt"); 
+	    if (headFile.delete()) { 
+	      System.out.println("Final delete successful");
+	    } else {
+	      System.out.println("Failed to delete the file.");
+	    } 
 		
 	}
 	
@@ -172,7 +179,7 @@ class CommitJUnitTester {
 		testIndex.add("firstTest.txt");
 		testIndex.add("secondTest.txt");
 		
-		Commit firstCommit = new Commit("Testing the first files", "Elliot Lichtman", null);
+		Commit firstCommit = new Commit("Testing the first files", "Elliot Lichtman");
 		
 		File commitFile = new File("objects/" + firstCommit.getSha());
 		assertTrue(commitFile.exists());
@@ -195,7 +202,7 @@ class CommitJUnitTester {
 		
 		testIndex.add("thirdTest.txt");
 		testIndex.add("fourthTest.txt");
-		Commit secondCommit = new Commit("Testing the second files", "Elliot Lichtman", firstCommit);
+		Commit secondCommit = new Commit("Testing the second files", "Elliot Lichtman");
 		
 		File secondCommitFile = new File("objects/" + secondCommit.getSha());
 		assertTrue(commitFile.exists());
@@ -222,12 +229,12 @@ class CommitJUnitTester {
 		testIndex.add("fifthTest.txt");
 		testIndex.add("sixthTest.txt");
 		
-		Commit thirdCommit = new Commit("Testing the third files", "Elliot Lichtman", secondCommit);
+		Commit thirdCommit = new Commit("Testing the third files", "Elliot Lichtman");
 		
 		testIndex.add("seventhTest.txt");
 		testIndex.add("eighthTest.txt");
 		
-		Commit fourthCommit = new Commit("Testing the fourth files", "Elliot Lichtman", thirdCommit);
+		Commit fourthCommit = new Commit("Testing the fourth files", "Elliot Lichtman");
 		
 		File fourthCommitFile = new File("objects/" + fourthCommit.getSha());
 		assertTrue(fourthCommitFile.exists());
