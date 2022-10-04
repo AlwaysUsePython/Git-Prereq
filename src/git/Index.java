@@ -76,7 +76,7 @@ public class Index {
 		
 		File toDelete = new File (FILE_NAME);
 		
-		toDelete.delete();
+		System.out.println(toDelete.delete());
 	}
 	
 	public static void remove(String fn) throws IOException {

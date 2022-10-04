@@ -1,6 +1,7 @@
 package git;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -53,7 +54,35 @@ public class Commit {
 		
 		ArrayList<String> listOfFiles = new ArrayList<String>();
 		
-		if (previous != null) {
+		
+		Scanner indexReader = new Scanner(new File("index.txt"));
+		boolean treeChange = false;
+		
+		while (indexReader.hasNext()) {
+			String indexStr = indexReader.nextLine();
+			
+			if (indexStr.charAt(0) == 'd') {
+				treeChange = true;
+			}
+			else {
+				String fileStr = "blob :";
+				fileStr += indexStr.substring(indexStr.indexOf(':')+1);
+				fileStr += " ";
+				// should I have made a variable for indexStr.indexOf(':') if I'm using it twice?
+				// yes.
+				// did I realize that too late and am now too lazy to make it?
+				// yes.
+				// did it take longer to write these comments than it would have to fix it?
+				// shhhhhhhhhhhhhh
+				fileStr += indexStr.substring(0, indexStr.indexOf(':') - 1);
+				
+				listOfFiles.add(fileStr);
+			}
+		}
+		
+		indexReader.close();
+		
+		if (previous != null && treeChange == false) {
 			String treeStr = "tree";
 			
 			treeStr += " : ";
@@ -64,33 +93,32 @@ public class Commit {
 			
 			listOfFiles.add(treeStr);
 		}
-		
-		Scanner indexReader = new Scanner(new File("index.txt"));
-		
-		while (indexReader.hasNext()) {
-			String indexStr = indexReader.nextLine();
-			String fileStr = "blob :";
-			fileStr += indexStr.substring(indexStr.indexOf(':')+1);
-			fileStr += " ";
-			// should I have made a variable for indexStr.indexOf(':') if I'm using it twice?
-			// yes.
-			// did I realize that too late and am now too lazy to make it?
-			// yes.
-			// did it take longer to write these comments than it would have to fix it?
-			// shhhhhhhhhhhhhh
-			fileStr += indexStr.substring(0, indexStr.indexOf(':') - 1);
+		else if (treeChange == true) {
 			
-			listOfFiles.add(fileStr);
+			ArrayList<String> blobs = traverseTree(parentTree);
+			
+			for (String blob : blobs) {
+				System.out.println(blob);
+				listOfFiles.add(blob);
+			}
+			
 		}
 		
-		indexReader.close();
 		
 		
 		commitTree = new Tree(listOfFiles);
 		
+		if (treeChange == true) {
+			System.out.println(commitTree.getFN());
+		}
+		
 		clearIndex();
 		
 		writeFile();
+		
+		if (treeChange == true) {
+			System.out.println("working");
+		}
 		
 		if (previous!=null) {
 			File prevFile = new File(previous);
@@ -131,17 +159,61 @@ public class Commit {
 	
 	}
 	
+	public ArrayList<String> traverseTree(String treePath) throws FileNotFoundException{
+		
+		System.out.println("objects/" + treePath + "done");
+		
+		File treeFile = new File("objects/" + treePath);
+		
+		ArrayList<String> newBlobs = new ArrayList<String>();
+		
+		Scanner scanny = new Scanner(treeFile);
+		
+		while (scanny.hasNext()) {
+			String nextLine = scanny.nextLine();
+			if (nextLine.charAt(0) == 'b'){
+				
+				File testFile = new File("objects/" + nextLine.substring(7, 47) + ".txt"); 
+				System.out.println("objects/" + nextLine.substring(7, 47) + ".txt");
+				if (testFile.exists())
+					newBlobs.add(nextLine);
+			}
+			else {
+				for (String blob : traverseTree(nextLine.substring(7))) {
+					newBlobs.add(blob);
+				}
+			}
+		}
+		scanny.close();
+		return newBlobs;
+		
+	}
+	
 	public void clearIndex() throws IOException {
 		
 		//File indexFile = new File("index.txt");
 		//System.out.println(indexFile.exists());
 		//System.out.println(indexFile.delete());
 		
-		Files.delete(Paths.get("index.txt"));
+		File indexFile = new File("index.txt");
+		try{
+			indexFile.delete();
+		}
+		catch(Exception e) {
+			System.out.println(e.getStackTrace());
+		}
 		
-		Index.makeFile("index.txt");
-		new File ("objects/").mkdirs();
+		System.out.println("deleted file");
 		
+		
+		try {
+			makeFile("index.txt");
+			new File ("objects/").mkdirs();
+		}
+		catch(Exception e) {
+			System.out.println(e.getStackTrace());
+		}
+		System.out.println("reset file");
 		Index.resetHashMap();
 	}
 	

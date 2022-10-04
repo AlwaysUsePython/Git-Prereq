@@ -218,7 +218,7 @@ class CommitJUnitTester {
 		correct = false;
 		
 		
-		if (firstLine.contains("objects/93824b02039746025869ce6b015a95c24530eba0") && secondLine.contains("objects/90770b9669182a5891dba68af77ca1cf33b867c7")) {
+		if (firstLine.contains("objects/61103de070b75a68a00cd3f15938877af3fa773f") && secondLine.contains("objects/90770b9669182a5891dba68af77ca1cf33b867c7")) {
 			correct = true;
 		}
 		
@@ -250,13 +250,15 @@ class CommitJUnitTester {
 		correct = false;
 		
 		
-		if (firstLine.contains("objects/f2b0a7be5550a88b20412942082a16360086eeaf") && secondLine.contains("objects/2cd1087da3253d0f3e834ae72831bd1dfd0be3dd")) {
+		if (firstLine.contains("objects/ae0032d5c6adbb87724f544023725797d52afca5") && secondLine.contains("objects/4f2d3cd894fca1bc43ec811e1e5889b345fda5e7")) {
 			correct = true;
 		}
 		
 		assertTrue(correct);
 		
 		testIndex.delete("firstTest.txt");
+		
+		Commit testDelete = new Commit("testing delete", "Elliot Lichtman");
 		
 		
 	}
