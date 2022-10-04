@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,7 +48,7 @@ class CommitJUnitTester {
 		
 		Path filePathToWrite4 = Paths.get("fourthTest.txt");
 		try {
-			Files.writeString(filePathToWrite3, "Fourth testing file", StandardCharsets.ISO_8859_1);
+			Files.writeString(filePathToWrite4, "Fourth testing file", StandardCharsets.ISO_8859_1);
 		}
 		catch (IOException exception) {
 			System.out.println("Write failed");
@@ -175,6 +176,78 @@ class CommitJUnitTester {
 		
 		File commitFile = new File("objects/" + firstCommit.getSha());
 		assertTrue(commitFile.exists());
+		
+		Scanner testReader = new Scanner(commitFile);
+		
+		String firstLine = testReader.nextLine();
+		
+		testReader.close();
+		
+		boolean correct = false;
+		
+		
+		if (firstLine.contains("objects/e466ec057b9ac2677cea48dcc171a4e165b00d6c")) {
+			correct = true;
+		}
+		
+		assertTrue(correct);
+		
+		
+		testIndex.add("thirdTest.txt");
+		testIndex.add("fourthTest.txt");
+		Commit secondCommit = new Commit("Testing the second files", "Elliot Lichtman", firstCommit);
+		
+		File secondCommitFile = new File("objects/" + secondCommit.getSha());
+		assertTrue(commitFile.exists());
+		
+		Scanner secondReader = new Scanner(secondCommitFile);
+		
+		firstLine = secondReader.nextLine();
+		
+		String secondLine = secondReader.nextLine();
+		
+		secondReader.close();
+		
+		correct = false;
+		
+		
+		if (firstLine.contains("objects/93824b02039746025869ce6b015a95c24530eba0") && secondLine.contains("objects/90770b9669182a5891dba68af77ca1cf33b867c7")) {
+			correct = true;
+		}
+		
+		assertTrue(correct);
+		
+		// I'm just gonna assume it's working for the third commit
+		
+		testIndex.add("fifthTest.txt");
+		testIndex.add("sixthTest.txt");
+		
+		Commit thirdCommit = new Commit("Testing the third files", "Elliot Lichtman", secondCommit);
+		
+		testIndex.add("seventhTest.txt");
+		testIndex.add("eighthTest.txt");
+		
+		Commit fourthCommit = new Commit("Testing the fourth files", "Elliot Lichtman", thirdCommit);
+		
+		File fourthCommitFile = new File("objects/" + fourthCommit.getSha());
+		assertTrue(fourthCommitFile.exists());
+		
+		Scanner lastReader = new Scanner(fourthCommitFile);
+		
+		firstLine = lastReader.nextLine();
+		
+		secondLine = lastReader.nextLine();
+		
+		lastReader.close();
+		
+		correct = false;
+		
+		
+		if (firstLine.contains("objects/f2b0a7be5550a88b20412942082a16360086eeaf") && secondLine.contains("objects/2cd1087da3253d0f3e834ae72831bd1dfd0be3dd")) {
+			correct = true;
+		}
+		
+		assertTrue(correct);
 		
 		
 	}
