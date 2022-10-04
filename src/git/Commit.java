@@ -92,9 +92,33 @@ public class Commit {
 		
 		writeFile();
 		
-//		if (previous!=null) {
-//			pass;
-//		}
+		if (previous!=null) {
+			File prevFile = new File(previous);
+			
+			Scanner prevReader = new Scanner(prevFile);
+			
+			String prevText = "";
+			
+			for (int i = 0; i < 2; i ++) {
+				prevText += prevReader.nextLine() + "\n";
+			}
+			prevText += "objects/" + getSha() + "\n";
+			
+			prevReader.nextLine();
+			
+			for (int i = 0; i < 3; i ++) {
+				prevText += prevReader.nextLine() + "\n";
+			}
+			prevReader.close();
+			
+			PrintWriter updater = new PrintWriter(prevFile);
+			
+			updater.write(prevText);
+			
+			updater.close();
+			
+			
+		}
 		
 		// updating head
 		
