@@ -257,6 +257,7 @@ class CommitJUnitTester {
 		assertTrue(correct);
 		
 		testIndex.delete("firstTest.txt");
+		testIndex.delete("fifthTest.txt");
 		
 		Commit testDelete = new Commit("testing delete", "Elliot Lichtman");
 		
